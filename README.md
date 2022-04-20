@@ -43,6 +43,15 @@ limitations under the License.
 
 ## Release Notes
 
+### v1.1.1
+
+- If the path to the caller's locale directory is not specified in
+  the constructor, it can now be calculated by using StackTrace to
+  find the directory that starts with "ilib-". This means the the
+  path parameter is no longer required. It is, however, still
+  accepted so that, amongst other things, it allows the unit tests
+  to specify where to load files.
+
 ### v1.1.0
 
 - Add caching support so that data is only loaded once

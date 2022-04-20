@@ -20,6 +20,7 @@
 
 import log4js from '@log4js-node/log4js-api';
 import JSON5 from 'json5';
+import StackTrace from 'stacktrace-js';
 
 import { getPlatform, getLocale, top } from 'ilib-env';
 import LoaderFactory from 'ilib-loader';
@@ -267,18 +268,32 @@ class LocaleData {
      * @constructor
      */
     constructor(packageName, options) {
-        if (!options || !options.path || !packageName) {
+        if (!packageName) {
             throw "Missing options to LocaleData constructor";
         }
         let {
             sync = false,
             path
-        } = options;
+        } = options || {};
 
         this.loader = LoaderFactory();
         this.sync = typeof(sync) === "boolean" && sync && (!this.loader || this.loader.supportsSync());
         this.cache = DataCache.getDataCache({packageName});
         this.logger = log4js.getLogger("ilib-localedata");
+        if (!path) {
+            const frames = StackTrace.getSync();
+            if (frames.length > 2) {
+                path = frames[2].fileName;
+                while (!Path.basename(path).startsWith("ilib-")) {
+                    path = Path.dirname(path);
+                }
+                // the substring strips off the file:// at the beginning
+                path = path.replace(/^file:\/\//, "");
+            }
+            if (!path) {
+                throw "Missing path option to LocaleData constructor";
+            }
+        }
         this.path = path;
     }
 
@@ -623,6 +638,7 @@ class LocaleData {
      */
     static clearCache() {
         DataCache.clearDataCache();
+        LocaleData.clearGlobalRoots();
     }
 }
 
