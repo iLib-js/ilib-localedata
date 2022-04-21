@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Path } from 'ilib-common';
 import { setPlatform, getPlatform } from 'ilib-env';
 import { registerLoader } from 'ilib-loader';
 
@@ -26,6 +27,7 @@ import getLocaleData, { clearLocaleData } from '../src/index';
 module.exports.testGetLocaleData = {
     testGetLocaleData: function(test) {
         test.expect(1);
+        clearLocaleData();
         const locData = getLocaleData("test", {
             path: "./test/files"
         });
@@ -35,16 +37,17 @@ module.exports.testGetLocaleData = {
 
     testGetLocaleDataNoPath: function(test) {
         test.expect(1);
-        test.throws((test) => {
-            getLocaleData("test", {
-                name: "test"
-            });
+        clearLocaleData();
+        const locData = getLocaleData("test", {
+            name: "test"
         });
+        test.equalIgnoringOrder(locData.getRoots(), [Path.dirname(Path.dirname(module.id))]);
         test.done();
     },
 
     testGetLocaleDataEmptyPackage: function(test) {
         test.expect(1);
+        clearLocaleData();
         test.throws(() => {
             getLocaleData("", {
                 path: "./test/files"
@@ -55,18 +58,11 @@ module.exports.testGetLocaleData = {
 
     testGetLocaleDataNoPackage: function(test) {
         test.expect(1);
+        clearLocaleData();
         test.throws(() => {
             getLocaleData(undefined, {
                 path: "./test/files"
             });
-        });
-        test.done();
-    },
-
-    testGetLocaleDataNoOptions: function(test) {
-        test.expect(1);
-        test.throws(() => {
-            getLocaleData("test");
         });
         test.done();
     },

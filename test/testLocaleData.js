@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { Path } from 'ilib-common';
 import { setPlatform, getPlatform } from 'ilib-env';
 import { registerLoader } from 'ilib-loader';
 
@@ -36,11 +37,10 @@ module.exports.testLocaleData = {
 
     testLocaleDataConstructorNoPath: function(test) {
         test.expect(1);
-        test.throws((test) => {
-            new LocaleData("test", {
-                name: "test"
-            });
+        const locData = new LocaleData("test", {
+            name: "test"
         });
+        test.equalIgnoringOrder(locData.getRoots(), [Path.dirname(Path.dirname(module.id))]);
         test.done();
     },
 

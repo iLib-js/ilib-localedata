@@ -35,8 +35,8 @@ import LocaleData from './LocaleData';
  * or if the package name was not specified
  */
 function getLocaleData(pkg, options) {
-    if (!options || !options.path || !pkg) {
-        throw "Missing options to LocaleData constructor";
+    if (!pkg) {
+        throw "Missing options to getLocaleData factory method";
     }
 
     const globalScope = top();
